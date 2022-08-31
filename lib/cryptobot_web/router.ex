@@ -20,6 +20,12 @@ defmodule CryptobotWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/webhooks", CryptobotWeb do
+    pipe_through :api
+
+    get "/verify", WebhookController, :verify
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", CryptobotWeb do
   #   pipe_through :api
