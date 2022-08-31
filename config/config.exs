@@ -49,6 +49,10 @@ config :phoenix, :json_library, Jason
 
 config :cryptobot, :facebook_messenger, verification_token: "QezJKVTjmOO2dc8wrbP"
 
+config :cryptobot, :coin_gecko,
+  api_url: "https://api.coingecko.com/api/v3/",
+  coin_gecko_api: CryptobotWeb.Services.Api.CoinGeckoApi
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

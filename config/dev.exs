@@ -73,7 +73,3 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
-
-config :cryptobot, :coin_gecko,
-  api_url: "https://api.coingecko.com/api/v3/",
-  coin_gecko_api: CryptobotWeb.Services.Api.CoinGeckoApi
