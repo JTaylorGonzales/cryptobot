@@ -3,12 +3,10 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
 
   @coin_gecko_api Application.get_env(:cryptobot, :coin_gecko)[:coin_gecko_api]
 
-  def get_coin_data(identifier) do
-    case @coin_gecko_api.get(
-           "/coins/#{identifier}/market_chart?vs_currency=usd&days=13&interval=daily"
-         ) do
+  def get_coin_data(id) do
+    case @coin_gecko_api.get("/coins/#{id}/market_chart?vs_currency=usd&days=13&interval=daily") do
       {:ok, %{body: %{"prices" => prices}}} ->
-        parse_data(prices)
+        format_prices_data(prices)
 
       {:error, _error} ->
         {:error, :coin_gecko_api_error}
@@ -18,16 +16,40 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
     end
   end
 
-  defp parse_data(prices) do
+  def search_coin(name, limit) do
+    case @coin_gecko_api.get("/search?query=#{name}") do
+      {:ok, %{body: %{"coins" => coins}}} ->
+        format_coins_data(coins, limit)
+
+      {:error, _error} ->
+        {:error, :coin_gecko_api_error}
+
+      _ ->
+        {:error, :unexpected_error}
+    end
+  end
+
+  def format_coins_data(coins, limit) do
+    data =
+      coins
+      |> Enum.take(limit)
+      |> Enum.reduce(%{}, fn coin, acc ->
+        Map.put(acc, coin["id"], %{name: coin["name"], thumb: coin["thumb"]})
+      end)
+
+    {:ok, data}
+  end
+
+  defp format_prices_data(prices) do
     data =
       Enum.reduce(prices, %{}, fn [date, price], acc ->
-        parsed_date =
+        formatted_date =
           date
           |> DateTime.from_unix!(:millisecond)
           |> DateTime.to_date()
           |> Timex.format!("%B %e, %Y", :strftime)
 
-        Map.put(acc, parsed_date, "$#{Float.round(price, 2)}")
+        Map.put(acc, formatted_date, "$#{Float.round(price, 2)}")
       end)
 
     {:ok, data}
