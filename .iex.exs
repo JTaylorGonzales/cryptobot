@@ -1,1 +1,1 @@
-alias CryptobotWeb.Services.Api.CryptoMarket
+alias CryptobotWeb.Services.Api.{CryptoMarket, Facebook}
