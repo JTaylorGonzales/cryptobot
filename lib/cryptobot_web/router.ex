@@ -23,8 +23,8 @@ defmodule CryptobotWeb.Router do
   scope "/webhooks", CryptobotWeb do
     pipe_through :api
 
-    get "/verify", WebhookController, :verify
-    post "/verify", WebhookController, :verify
+    get "/", WebhookController, :handle_event
+    post "/", WebhookController, :handle_event
   end
 
   # Other scopes may use custom stacks.
