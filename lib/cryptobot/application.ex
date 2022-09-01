@@ -23,6 +23,7 @@ defmodule Cryptobot.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Cryptobot.Supervisor]
+    :ets.new(:user_input_cache, [:set, :public, :named_table])
     Supervisor.start_link(children, opts)
   end
 
