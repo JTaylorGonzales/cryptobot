@@ -10,7 +10,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.Templates do
           type: "template",
           payload: %{
             template_type: "button",
-            text: "Choose on how you want to search a crypto:",
+            text: "Do you want to search a crypto? Choose on how you want to: ",
             buttons: [
               %{
                 type: "postback",
@@ -30,13 +30,78 @@ defmodule CryptobotWeb.Services.Api.Facebook.Templates do
   end
 
   def search_by_template(sender_id, query) do
+    generic_text_reply(sender_id, "RESPONSE", "Cool, Whats the #{query} of the Crypto?")
+  end
+
+  def reply_cannot_be_parsed_template(sender_id) do
+    generic_text_reply(sender_id, "RESPONSE", "Sorry your I can't process your response")
+  end
+
+  def coins_carousel_template(sender_id, coins) do
+    elements =
+      Enum.map(coins, fn {coin_id, %{name: name, thumb: thumb_url}} ->
+        %{
+          title: name,
+          image_url: thumb_url,
+          buttons: [
+            %{
+              type: "postback",
+              title: "Market History",
+              payload: "COIN_ID_#{coin_id}"
+            }
+          ]
+        }
+      end)
+
     %{
       recipient: %{
         id: sender_id
       },
-      messaging_type: "RESPONSE",
       message: %{
-        text: "Cool, Whats the #{query} of the Crypto?"
+        attachment: %{
+          type: "template",
+          payload: %{
+            template_type: "generic",
+            elements: elements
+          }
+        }
+      }
+    }
+  end
+
+  def coin_not_found_template(sender_id) do
+    generic_text_reply(
+      sender_id,
+      "RESPONSE",
+      "Sorry, We cannot find the coin you're looking at. Please Try again."
+    )
+  end
+
+  def coin_market_history_template(sender_id, coin_data) do
+    {_index, text} =
+      Enum.reduce(coin_data, {1, ""}, fn {date, price}, {index, acc} ->
+        {index + 1, acc <> "\n #{index}. #{date} #{price}"}
+      end)
+
+    generic_text_reply(sender_id, "RESPONSE", text)
+  end
+
+  def generic_try_again_template(sender_id) do
+    generic_text_reply(
+      sender_id,
+      "RESPONSE",
+      "Sorry, Something Went wrong upon processing your request. Please Try again."
+    )
+  end
+
+  defp generic_text_reply(sender_id, type, text) do
+    %{
+      recipient: %{
+        id: sender_id
+      },
+      messaging_type: type,
+      message: %{
+        text: text
       }
     }
   end
