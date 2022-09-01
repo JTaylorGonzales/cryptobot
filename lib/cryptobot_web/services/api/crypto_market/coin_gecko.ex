@@ -8,6 +8,9 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
       {:ok, %{body: %{"prices" => prices}}} ->
         format_coin_prices_data(prices)
 
+      {:ok, %{status_code: 404}} ->
+        {:error, :no_crypto_found}
+
       {:error, _error} ->
         {:error, :coin_gecko_api_error}
 

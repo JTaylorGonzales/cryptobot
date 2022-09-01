@@ -15,6 +15,10 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGeckoTest do
       assert data == %{date => "$123.45"}
     end
 
+    test "it should return an error when the coin id is not existing" do
+      assert {:error, :no_crypto_found} = CoinGecko.get_coin_data("notACoin")
+    end
+
     test "it should return an error when something went wrong with the api" do
       assert {:error, :coin_gecko_api_error} = CoinGecko.get_coin_data("errorMock")
     end

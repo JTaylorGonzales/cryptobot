@@ -10,6 +10,10 @@ defmodule Cryptobot.Mocks.CoinGeckoMock do
      }}
   end
 
+  def get("/coins/notACoin/market_chart?vs_currency=usd&days=13&interval=daily") do
+    {:ok, %{status_code: 404}}
+  end
+
   def get("/coins/errorMock/market_chart?vs_currency=usd&days=13&interval=daily") do
     {:error, :coin_gecko_api_error}
   end
