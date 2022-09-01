@@ -6,7 +6,7 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
   def get_coin_data(id) do
     case @coin_gecko_api.get("/coins/#{id}/market_chart?vs_currency=usd&days=13&interval=daily") do
       {:ok, %{body: %{"prices" => prices}}} ->
-        format_prices_data(prices)
+        format_coin_prices_data(prices)
 
       {:error, _error} ->
         {:error, :coin_gecko_api_error}
@@ -29,7 +29,9 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
     end
   end
 
-  def format_coins_data(coins, limit) do
+  defp format_coins_data([], _limit), do: {:error, :no_crypto_found}
+
+  defp format_coins_data(coins, limit) do
     data =
       coins
       |> Enum.take(limit)
@@ -40,7 +42,7 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
     {:ok, data}
   end
 
-  defp format_prices_data(prices) do
+  defp format_coin_prices_data(prices) do
     data =
       Enum.reduce(prices, %{}, fn [date, price], acc ->
         formatted_date =
