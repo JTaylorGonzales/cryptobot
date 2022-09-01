@@ -34,6 +34,10 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGeckoTest do
       assert Enum.count(data) == 2
     end
 
+    test "it should return an error when a crypto coin search returns no result" do
+      assert {:error, :no_crypto_found} = CoinGecko.search_coin("notACoin", 5)
+    end
+
     test "it should return an error when something went wrong with the api" do
       assert {:error, :coin_gecko_api_error} = CoinGecko.search_coin("errorMock", 5)
     end
