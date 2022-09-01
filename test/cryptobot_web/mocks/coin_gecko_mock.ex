@@ -53,6 +53,10 @@ defmodule Cryptobot.Mocks.CoinGeckoMock do
      }}
   end
 
+  def get("/search?query=notACoin") do
+    {:ok, %{body: %{"coins" => []}}}
+  end
+
   def get("/search?query=errorMock") do
     {:error, :coin_gecko_api_error}
   end
