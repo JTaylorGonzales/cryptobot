@@ -33,21 +33,26 @@ defmodule CryptobotWeb.Services.Api.Facebook.Templates do
     generic_text_reply(sender_id, "RESPONSE", "Cool, Whats the #{query} of the Crypto?")
   end
 
+  def coins_found_template(sender_id) do
+    generic_text_reply(sender_id, "RESPONSE", "Here are the top 5 Coins found: ")
+  end
+
   def reply_cannot_be_parsed_template(sender_id) do
     generic_text_reply(sender_id, "RESPONSE", "Sorry your I can't process your response")
   end
 
   def coins_carousel_template(sender_id, coins) do
     elements =
-      Enum.map(coins, fn {coin_id, %{name: name, thumb: thumb_url}} ->
+      Enum.map(coins, fn {rank, %{name: name, thumb: thumb_url, id: coin_id}} ->
         %{
           title: name,
+          subtitle: "Market Cap Rank: #{rank}",
           image_url: thumb_url,
           buttons: [
             %{
               type: "postback",
               title: "Market History",
-              payload: "COIN_ID_#{coin_id}"
+              payload: "COIN_ID_#{coin_id} #{name}"
             }
           ]
         }
@@ -78,9 +83,11 @@ defmodule CryptobotWeb.Services.Api.Facebook.Templates do
   end
 
   def coin_market_history_template(sender_id, coin_data) do
-    {_index, text} =
-      Enum.reduce(coin_data, {1, ""}, fn {date, price}, {index, acc} ->
-        {index + 1, acc <> "\n #{index}. #{date} #{price}"}
+    txt = "Here is the 14 day market History \n"
+
+    text =
+      Enum.reduce(coin_data, txt, fn {date, price}, acc ->
+        acc <> "\n #{date}: #{price}"
       end)
 
     generic_text_reply(sender_id, "RESPONSE", text)
