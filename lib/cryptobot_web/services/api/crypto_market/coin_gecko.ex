@@ -39,7 +39,11 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
       coins
       |> Enum.take(limit)
       |> Enum.reduce(%{}, fn coin, acc ->
-        Map.put(acc, coin["id"], %{name: coin["name"], thumb: coin["thumb"]})
+        Map.put(acc, coin["market_cap_rank"], %{
+          name: coin["name"],
+          thumb: coin["large"],
+          id: coin["id"]
+        })
       end)
 
     {:ok, data}
@@ -51,8 +55,7 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
         formatted_date =
           date
           |> DateTime.from_unix!(:millisecond)
-          |> DateTime.to_date()
-          |> Timex.format!("%B %e, %Y", :strftime)
+          |> Timex.format!("%B %e", :strftime)
 
         Map.put(acc, formatted_date, "$#{Float.round(price, 2)}")
       end)
