@@ -18,9 +18,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
           ]
         }
       ]) do
-    sender_id
-    |> Templates.get_started_template()
-    |> Facebook.send_message()
+    send_get_started_template(sender_id)
   end
 
   def parse([
@@ -67,6 +65,22 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
         %{
           "messaging" => [
             %{
+              "postback" => %{
+                "payload" => "COIN_ID_" <> coin_id
+              },
+              "sender" => %{"id" => sender_id}
+            }
+            | _t
+          ]
+        }
+      ]) do
+    handle_reply([{sender_id, :search_by_id}], sender_id, coin_id)
+  end
+
+  def parse([
+        %{
+          "messaging" => [
+            %{
               "message" => %{
                 "text" => text
               },
@@ -87,6 +101,8 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     sender_id
     |> Templates.reply_cannot_be_parsed_template()
     |> Facebook.send_message()
+
+    send_get_started_template(sender_id)
   end
 
   def handle_reply([{sender_id, :search_by_name} | _t], sender_id, text) do
@@ -105,14 +121,12 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     Facebook.send_message(template)
     :ets.delete(:user_input_cache, sender_id)
 
-    sender_id
-    |> Templates.get_started_template()
-    |> Facebook.send_message()
+    send_get_started_template(sender_id)
   end
 
-  def handle_reply([{sender_id, :search_by_id} | _t], sender_id, text) do
+  def handle_reply([{sender_id, :search_by_id} | _t], sender_id, coin_id) do
     template =
-      case CoinGecko.get_coin_data(text) do
+      case CoinGecko.get_coin_data(coin_id) do
         {:ok, coin_data} ->
           Templates.coin_market_history_template(sender_id, coin_data)
 
@@ -126,6 +140,10 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     Facebook.send_message(template)
     :ets.delete(:user_input_cache, sender_id)
 
+    send_get_started_template(sender_id)
+  end
+
+  defp send_get_started_template(sender_id) do
     sender_id
     |> Templates.get_started_template()
     |> Facebook.send_message()
