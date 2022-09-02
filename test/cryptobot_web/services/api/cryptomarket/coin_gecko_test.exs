@@ -10,7 +10,7 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGeckoTest do
       date =
         DateTime.utc_now()
         |> DateTime.to_date()
-        |> Timex.format!("%B %e, %Y", :strftime)
+        |> Timex.format!("%B %e", :strftime)
 
       assert data == %{date => "$123.45"}
     end
@@ -26,8 +26,7 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGeckoTest do
 
   describe "search_coin/2" do
     test "it should return the formmated search result" do
-      {:ok, %{"bitcoin" => bitcoin, "huobi-btc" => _hbtc, "wrapped-bitcoin" => _wbtc}} =
-        CoinGecko.search_coin("bitcoin", 5)
+      {:ok, %{1 => bitcoin, 19 => _hbtc, 60 => _wbtc}} = CoinGecko.search_coin("bitcoin", 5)
 
       assert %{name: "Bitcoin", thumb: thumb} = bitcoin
       assert is_binary(thumb)
