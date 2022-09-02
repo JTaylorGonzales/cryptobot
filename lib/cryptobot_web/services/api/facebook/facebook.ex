@@ -1,6 +1,6 @@
 defmodule CryptobotWeb.Services.Api.Facebook do
   @api CryptobotWeb.Services.Api.FacebookApi
-  @token "EAAFIKUmZBM3wBACCa7cYDrGnoLzUwujv8f1Rr1qZAhssIC3VV8P5ZAE0ttU0FO8NLLThV4rZC0y1ZCZBCbaijpu9n7psywbJkMxseZCuPgZAJA8spsFFrRuDbTL2SzeKcVGhzVtegh5qXbFYNtoXeUgnP2P0YuZBeYjbUsF2o5ZAgaf9nIkvxnhGXsGu0oFkOcdT2SC6x7MOWK4AZDZD"
+  @token "EAAFIKUmZBM3wBAJah1CFSYLbau0zTqzDbaQACT2ZAd2fnxIq4H1ohruB7BxRrBXr5972epursBKdpnwgcTyTFuSrxOaweHCejQnxoyodUUO7DYCvEJNyuJKA342PcmWaJ6uSBFzeEXVCg4p9PMQiZA8b2uOTVSqmw1RFSw8D8YsklqaoHZARo1U9ua5qVS1ZBYcGmBkZAenwZDZD"
 
   def set_greeting do
     body =
@@ -35,5 +35,6 @@ defmodule CryptobotWeb.Services.Api.Facebook do
     @api.post("messages?access_token=#{@token}", body, [
       {"Content-Type", "application/json"}
     ])
+    |> IO.inspect()
   end
 end
