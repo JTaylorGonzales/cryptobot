@@ -1,20 +1,21 @@
 defmodule Cryptobot.Mocks.CoinGeckoMock do
-  def get("/coins/bitcoin/market_chart?vs_currency=usd&days=13&interval=daily") do
+  def get("/coins/bitcoin/market_chart?vs_currency=usd&days=14&interval=daily") do
     {:ok,
      %{
        body: %{
          "prices" => [
            [DateTime.utc_now() |> DateTime.to_unix(:millisecond), 123.446]
          ]
-       }
+       },
+       status_code: 200
      }}
   end
 
-  def get("/coins/notACoin/market_chart?vs_currency=usd&days=13&interval=daily") do
+  def get("/coins/notACoin/market_chart?vs_currency=usd&days=14&interval=daily") do
     {:ok, %{status_code: 404}}
   end
 
-  def get("/coins/errorMock/market_chart?vs_currency=usd&days=13&interval=daily") do
+  def get("/coins/errorMock/market_chart?vs_currency=usd&days=14&interval=daily") do
     {:error, :coin_gecko_api_error}
   end
 
@@ -53,12 +54,13 @@ defmodule Cryptobot.Mocks.CoinGeckoMock do
              "thumb" => "https://assets.coingecko.com/coins/images/12407/thumb/Unknown-5.png"
            }
          ]
-       }
+       },
+       status_code: 200
      }}
   end
 
   def get("/search?query=notACoin") do
-    {:ok, %{body: %{"coins" => []}}}
+    {:ok, %{body: %{"coins" => []}, status_code: 200}}
   end
 
   def get("/search?query=errorMock") do
