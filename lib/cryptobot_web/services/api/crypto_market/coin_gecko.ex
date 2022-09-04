@@ -1,10 +1,11 @@
 defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
+  @behaviour CryptobotWeb.Services.Api.CryptoMarket.CryptoMarketBehaviour
   # by setting the api module on the config, we can easily mock our API for testing purposes
-
   @coin_gecko_api Application.get_env(:cryptobot, :coin_gecko)[:coin_gecko_api]
 
+  @impl true
   def get_coin_data(id) do
-    case @coin_gecko_api.get("/coins/#{id}/market_chart?vs_currency=usd&days=13&interval=daily") do
+    case @coin_gecko_api.get("/coins/#{id}/market_chart?vs_currency=usd&days=14&interval=daily") do
       {:ok, %{body: %{"prices" => prices}}} ->
         format_coin_prices_data(prices)
 
@@ -19,9 +20,10 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
     end
   end
 
+  @impl true
   def search_coin(name, limit) do
     case @coin_gecko_api.get("/search?query=#{name}") do
-      {:ok, %{body: %{"coins" => coins}}} ->
+      {:ok, %{status_code: 200, body: %{"coins" => coins}}} ->
         format_coins_data(coins, limit)
 
       {:error, _error} ->
