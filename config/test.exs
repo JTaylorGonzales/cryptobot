@@ -32,3 +32,9 @@ config :phoenix, :plug_init_mode, :runtime
 config :cryptobot, :coin_gecko,
   api_url: "https://test-coin-gecko.com/api/v3/",
   coin_gecko_api: Cryptobot.Mocks.CoinGeckoMock
+
+config :cryptobot, :facebook,
+  api_url: "https://test.facebook.com/v14.0/me/",
+  facebook_api: Cryptobot.Mocks.FacebookMock,
+  access_token: "testFacebookToken",
+  verification_token: "testVerificationToken"

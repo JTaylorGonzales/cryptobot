@@ -47,11 +47,15 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :cryptobot, :facebook_messenger, verification_token: "QezJKVTjmOO2dc8wrbP"
-
 config :cryptobot, :coin_gecko,
   api_url: "https://api.coingecko.com/api/v3/",
   coin_gecko_api: CryptobotWeb.Services.Api.CoinGeckoApi
+
+config :cryptobot, :facebook,
+  api_url: "https://graph.facebook.com/v14.0/me/",
+  facebook_api: CryptobotWeb.Services.Api.FacebookApi,
+  access_token: System.get_env("FACEBOOK_TOKEN"),
+  verification_token: "QezJKVTjmOO2dc8wrbP"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
