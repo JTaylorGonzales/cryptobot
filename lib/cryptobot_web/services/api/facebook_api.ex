@@ -1,9 +1,11 @@
 defmodule CryptobotWeb.Services.Api.FacebookApi do
   use HTTPoison.Base
 
-  @url "https://graph.facebook.com/v14.0/me/"
+  @url Application.get_env(:cryptobot, :facebook)[:api_url]
 
   def process_url(url), do: @url <> url
+
+  def process_request_headers(headers), do: [{"Content-Type", "application/json"} | headers]
 
   def process_request_body(body), do: Jason.encode!(body)
 
