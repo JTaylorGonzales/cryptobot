@@ -14,17 +14,13 @@ defmodule CryptobotWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", CryptobotWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
-  end
-
-  scope "/webhooks", CryptobotWeb do
+  scope "/webhooks", CryptobotWeb.Webhooks do
     pipe_through :api
 
-    get "/", WebhookController, :handle_event
-    post "/", WebhookController, :handle_event
+    scope "/facebook" do
+      get "/", FacebookController, :handle_event
+      post "/", FacebookController, :handle_event
+    end
   end
 
   # Other scopes may use custom stacks.
