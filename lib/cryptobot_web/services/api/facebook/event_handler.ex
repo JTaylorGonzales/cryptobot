@@ -5,6 +5,12 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     Facebook.Templates
   }
 
+  require Logger
+
+  @doc """
+    This function pattern matches the incoming webhooks sent by Facebook.
+  """
+  # handles the event when a user clicks the "Get Started" button when interacting with the chatbot for the firs time
   def parse([
         %{
           "messaging" => [
@@ -21,6 +27,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     send_get_started_template(sender_id)
   end
 
+  # handles the event when a user choose the button: `Search Crypto By Name`
   def parse([
         %{
           "messaging" => [
@@ -41,6 +48,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     |> Facebook.send_message()
   end
 
+  # handles the event when a user choose the button: `Search Crypto By ID`
   def parse([
         %{
           "messaging" => [
@@ -61,6 +69,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     |> Facebook.send_message()
   end
 
+  # handles the event when a user choose a coin from the COIN carousel when searching for a crypto by name
   def parse([
         %{
           "messaging" => [
@@ -77,6 +86,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     handle_reply([{sender_id, :search_by_id}], sender_id, coin_id)
   end
 
+  # handles the event when a user send a text message
   def parse([
         %{
           "messaging" => [
@@ -97,7 +107,13 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     |> handle_reply(sender_id, text)
   end
 
-  def handle_reply([], sender_id, _text) do
+  # handles unexpected webhook events
+  def parse(event) do
+    unexpected_event = Jason.encode!(event)
+    Logger.error("This Webhook cannot be parsed: #{unexpected_event}")
+  end
+
+  defp handle_reply([], sender_id, _text) do
     sender_id
     |> Templates.reply_cannot_be_parsed_template()
     |> Facebook.send_message()
@@ -105,7 +121,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     send_get_started_template(sender_id)
   end
 
-  def handle_reply([{sender_id, :search_by_name} | _t], sender_id, text) do
+  defp handle_reply([{sender_id, :search_by_name} | _t], sender_id, text) do
     template =
       case CoinGecko.search_coin(text, 5) do
         {:ok, coins} ->
@@ -124,7 +140,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     send_get_started_template(sender_id)
   end
 
-  def handle_reply([{sender_id, :search_by_id} | _t], sender_id, coin_id) do
+  defp handle_reply([{sender_id, :search_by_id} | _t], sender_id, coin_id) do
     template =
       case CoinGecko.get_coin_data(coin_id) do
         {:ok, coin_data} ->
@@ -147,9 +163,5 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
     sender_id
     |> Templates.get_started_template()
     |> Facebook.send_message()
-  end
-
-  def parse(_) do
-    nil
   end
 end
