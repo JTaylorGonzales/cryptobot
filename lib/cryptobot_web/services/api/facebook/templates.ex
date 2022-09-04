@@ -52,7 +52,7 @@ defmodule CryptobotWeb.Services.Api.Facebook.Templates do
             %{
               type: "postback",
               title: "Market History",
-              payload: "COIN_ID_#{coin_id} #{name}"
+              payload: "COIN_ID_#{coin_id}"
             }
           ]
         }
