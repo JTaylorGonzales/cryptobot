@@ -11,10 +11,11 @@ services:
       - postgres
     stdin_open: true
     tty: true
-    command: "mix phx.server"
+    command: "iex -S mix phx.server"
     environment:
       DATABASE_URL: "postgres://postgres:postgres@postgres/cryptobot_dev"
       TEST_DATABASE_URL: "postgres://postgres:postgres@postgres/cryptobot_test"
+      ACCESS_TOKEN: "<FacebookToken>"
 
   postgres:
     image: postgres:13.3
