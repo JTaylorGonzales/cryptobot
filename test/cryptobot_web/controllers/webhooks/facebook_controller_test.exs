@@ -8,8 +8,8 @@ defmodule CryptobotWeb.Webhooks.FacebookControllerTest do
           conn,
           Routes.facebook_path(conn, :handle_event, %{
             "hub.challenge" => "test_challenge",
-            "mode" => "subscribe",
-            "token" => Application.get_env(:cryptobot, :facebook)[:verification_token]
+            "hub.mode" => "subscribe",
+            "hub.verify_token" => Application.get_env(:cryptobot, :facebook)[:verification_token]
           })
         )
 
