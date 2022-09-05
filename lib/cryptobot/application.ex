@@ -15,9 +15,10 @@ defmodule Cryptobot.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Cryptobot.PubSub},
       # Start the Endpoint (http/https)
-      CryptobotWeb.Endpoint
+      CryptobotWeb.Endpoint,
       # Start a worker by calling: Cryptobot.Worker.start_link(arg)
       # {Cryptobot.Worker, arg}
+      {Task.Supervisor, name: EventHandlerSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
