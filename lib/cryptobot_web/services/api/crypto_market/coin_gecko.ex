@@ -1,9 +1,17 @@
 defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
+  @moduledoc """
+    this module is responsible for building the complete API calls to the coingecko API
+    and properly formats the response
+  """
+
   @behaviour CryptobotWeb.Services.Api.CryptoMarket.CryptoMarketBehaviour
-  # by setting the api module on the config, we can easily mock our API for testing purposes
   @coin_gecko_api Application.get_env(:cryptobot, :coin_gecko)[:coin_gecko_api]
 
   @impl true
+  @spec get_coin_data(id :: String.t()) ::
+          {:error, :coin_gecko_api_error | :no_crypto_found | :unexpected_error}
+          | {:ok, coin_data :: map()}
+
   def get_coin_data(id) do
     case @coin_gecko_api.get("/coins/#{id}/market_chart?vs_currency=usd&days=14&interval=daily") do
       {:ok, %{body: %{"prices" => prices}}} ->
@@ -21,6 +29,9 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket.CoinGecko do
   end
 
   @impl true
+  @spec search_coin(name :: String.t(), limit :: integer()) ::
+          {:error, :coin_gecko_api_error | :no_crypto_found | :unexpected_error}
+          | {:ok, coin_data :: map()}
   def search_coin(name, limit) do
     case @coin_gecko_api.get("/search?query=#{name}") do
       {:ok, %{status_code: 200, body: %{"coins" => coins}}} ->

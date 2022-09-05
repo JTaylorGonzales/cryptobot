@@ -7,6 +7,9 @@ defmodule CryptobotWeb.Services.Api.Facebook.EventHandler do
 
   require Logger
 
+  @moduledoc """
+    this module is responsible for handling all of the valid webhooks that we are expected to parse
+  """
   @doc """
     This function pattern matches the incoming webhooks sent by Facebook.
   """

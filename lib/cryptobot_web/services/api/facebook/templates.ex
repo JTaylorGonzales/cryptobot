@@ -1,4 +1,8 @@
 defmodule CryptobotWeb.Services.Api.Facebook.Templates do
+  @moduledoc """
+    this module is responsible for building the proper JSON data that will be sent to Facebook API
+  """
+
   def get_started_template(sender_id) do
     %{
       recipient: %{
