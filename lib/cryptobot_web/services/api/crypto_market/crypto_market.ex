@@ -12,13 +12,9 @@ defmodule CryptobotWeb.Services.Api.CryptoMarket do
     assign_market(market).get_coin_data(identifier)
   end
 
-  def get_coin_data(_id, _market), do: {:error, :invalid_market}
-
   def search_coin(name, limit \\ 5, market \\ :coin_gecko) when market in @valid_markets do
     assign_market(market).search_coin(name, limit)
   end
-
-  def search_coin(_name, _limit, _market), do: {:error, :invalid_market}
 
   defp assign_market(:coin_gecko), do: CoinGecko
 end
