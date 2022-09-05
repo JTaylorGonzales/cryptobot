@@ -1,6 +1,6 @@
 defmodule Cryptobot.Mocks.FacebookMock do
   @doc """
-
+    This module is responsible for mocking the responses for facebook API calls
   """
 
   # this function will mock the response for the event: `GET STARTED`
@@ -56,7 +56,7 @@ defmodule Cryptobot.Mocks.FacebookMock do
   # this will mock the response for the event: SUCCESSFULLY SEARCHING for a crypto by ID and CHOOSING a Crypto on the Coin Carousel
   def post("messages?access_token=testFacebookToken", %{
         message: %{
-          text: "Here is the 14 day market History \n\n September  4: $123.45"
+          text: "Here is the 14 day market History" <> _date
         },
         messaging_type: "RESPONSE",
         recipient: %{id: "validSenderId"}
@@ -122,11 +122,27 @@ defmodule Cryptobot.Mocks.FacebookMock do
     {:ok, %{status_code: 200}}
   end
 
+  # this will mock the response for the event: A user sends a message without choosing Search By Crypto Name or ID
   def post("messages?access_token=testFacebookToken", %{
         message: %{text: "Sorry your I can't process your response"},
         messaging_type: "RESPONSE",
         recipient: %{id: "validSenderId"}
       }) do
     {:ok, %{status_code: 200}}
+  end
+
+  # this will mock the response for the event: FACEBOOK access token is expired
+  def post("messages?access_token=testFacebookToken", %{access_token_expired: "mock"}) do
+    {:ok, %{status_code: 401}}
+  end
+
+  # this will mock the response for the event: Unexpected Response from facebook
+  def post("messages?access_token=testFacebookToken", %{unexpected_response: "mock"}) do
+    {:ok, %{status_code: 500, body: %{message: "unexpected error occured"}}}
+  end
+
+  # this will mock the response for the event: Unexpected error occured
+  def post("messages?access_token=testFacebookToken", %{unexpected_error: "mock"}) do
+    {:error, :unexpected_error}
   end
 end
